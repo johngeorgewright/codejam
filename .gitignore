@@ -1,4 +1,6 @@
 *.log
 *.swp
+.exrc
+_exrc
 node_modules
 
