@@ -13,9 +13,14 @@ module.exports = class InputParser
       c = @caseParser c
       fn.call context, c, lineNum + 1, args...
 
-  out: ->
+  out: (path=off)->
+    out = []
     @forEach (caseResult, caseNum)->
-      console.log "Case ##{caseNum}: #{caseResult}"
+      buf = new Buffer "Case ##{caseNum}: #{caseResult}"
+      str = buf.toString 'ascii'
+      out.push str
+      console.log str
+    fs.writeFile path, out.join "\n" if path
 
   in: (path)->
     input = fs.readFileSync path
