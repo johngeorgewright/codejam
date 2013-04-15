@@ -3,21 +3,21 @@ fs = require 'fs'
 module.exports = class InputParser
   constructor: ->
     @position = 0
-    @cases = []
+    @lines = []
 
   caseParser: ->
     throw new Error "#{@constructor.name} does not implement a #caseParser()"
 
   current: ->
-    @cases[@position]
+    @lines[@position]
 
   next: ->
     @position++
-    @cases[@position]
+    @lines[@position]
 
   previous: ->
     @position--
-    @cases[@position]
+    @lines[@position]
 
   valid: ->
     0 <= @position < @length
@@ -27,26 +27,26 @@ module.exports = class InputParser
 
   forEach: (fn)->
     @reset()
+    caseNum = 1
     while @valid()
       c = @current()
       c = @caseParser c
-      fn.call this, c, @position + 1
+      fn.call this, c, caseNum
       @next()
+      caseNum++
 
   out: (path=off)->
     out = []
-    caseNum = 1
     @forEach (caseResult)->
       buf = new Buffer "Case ##{caseNum}: #{caseResult}"
       str = buf.toString 'ascii'
       out.push str
       console.log str
-      caseNum++
     fs.writeFile path, out.join "\n" if path
 
   in: (path)->
     input = fs.readFileSync path
-    cases = input.toString().match /[^\r\n]+/g
-    @length = cases.shift()
-    @cases = cases
+    lines = input.toString().match /[^\r\n]+/g
+    @length = lines.shift()
+    @lines = lines
 
