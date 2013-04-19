@@ -1,6 +1,6 @@
 fs = require 'fs'
 
-module.exports = class InputParser
+module.exports = class BaseIO
   constructor: ->
     @position = 0
     @lines = []
@@ -20,7 +20,7 @@ module.exports = class InputParser
     @lines[@position]
 
   valid: ->
-    0 <= @position < @length
+    0 <= @position < @lines.length
 
   reset: ->
     @position = 0
@@ -37,7 +37,7 @@ module.exports = class InputParser
 
   out: (path=off)->
     out = []
-    @forEach (caseResult)->
+    @forEach (caseResult, caseNum)->
       buf = new Buffer "Case ##{caseNum}: #{caseResult}"
       str = buf.toString 'ascii'
       out.push str
